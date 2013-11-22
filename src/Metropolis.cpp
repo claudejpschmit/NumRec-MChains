@@ -1,12 +1,13 @@
 #include "Metropolis.hpp"
 #include <cmath>
 
-#define PI 3.1415
-
-Metropolis::Metropolis(vector<double> xi_initial)
+Metropolis::Metropolis(vector<double> initial_xi, Pdf *targetPdf)
 {
-    srand(15000);
-    xi_values = xi_initial;
+    this->targetPdf = targetPdf;
+    gaussian = new Gaussian(1.0, 0.0, 50.0);
+    uniform = new Uniform(0.0, 1.0);
+    current_xi = initial_xi;
+    nParams = initial_xi.size(); 
 }
 
 Metropolis::~Metropolis()
@@ -14,27 +15,22 @@ Metropolis::~Metropolis()
 
 }
 
-std::vector<double> Metropolis::step(vector<double> initial_xi)
+void Metropolis::step()
 {
-    double random01 = ((double) rand() / (RAND_MAX));
-    vector<double> temp = xi_values;
-    for (int i = 0; i < initial_xi.size(); ++i)
-    {
-        xi_values[i] += res[i];
-        double ratio = target_p(xi_values[i]) / target_p(temp[i]);
-
+    vector<double> dx, temp_xi;
+    double ratio;
+    for (int i = 0; i < nParams; ++i) {
+        dx[i] = gaussian->drawValue(0.0);
+        temp_xi[i] = current_xi[i] + dx[i];
+        ratio = targetPdf->evaluatePdf(temp_xi[i]) / 
+                        targetPdf->evaluatePdf(current_xi[i]);
+        
+        if (ratio >= uniform->drawValue(0.0))
+            current_xi[i] = temp_xi[i];
     }
-    return 0;
 }
 
-double Metropolis::target_p(double x)
+vector<double> Metropolis::getCurrentXi()
 {
-    return 0;
-}
-double Metropolis::trial_distr_q(double x, double sigma)
-{
-    double result;
-    double norm = 1.0/(sigma * 2 * sqrt(PI)); 
-    double twoSigSq = 1.0/(2 * sigma * sigma);
-    return norm * exp(- twoSigSq * x * x);
+    return current_xi;
 }

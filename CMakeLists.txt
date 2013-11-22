@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(MCHAIN)
 message(status "${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories(src include)
-set(HEADER_FILES include/test.hpp)
+set(HEADER_FILES include/Pdf.hpp include/Metropolis.hpp)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(Boost 1.53)
@@ -32,20 +32,10 @@ set(LIBS ${LIBS} ${FFTW_LIBRARIES})
 #include_directories(${ROOT_INCLUDE_DIRS})
 #set(LIBS ${LIBS} ${ROOT_LIBRARIES})
 
-#include(FindROOT.cmake)
-#set(INCLUDE_DIRECTORIES ${ROOT_INCLUDE_DIR})
-#include_directories(${INCLUDE_DIRECTORIES})
-
-#set(LINK_DIRECTORIES ${ROOT_LIBRARY_DIR})
-#link_directories(${LINK_DIRECTORIES})
-
-#INCLUDE_DIRECTORIES(${ROOT_INCLUDE_DIR})
-#LINK_DIRECTORIES(${ROOT_LIBRARY_DIR})
-
-add_executable(MChain src/Main.cpp ${HEADER_FILES})
+add_executable(MChain src/Main.cpp src/Pdf.cpp src/Metropolis.cpp ${HEADER_FILES})
 target_link_libraries(MChain -lm ${Boost_LIBRARIES}
     ${ARMADILLO_LIBRARIES} ${LIBS})
-#target_link_libraries(ODE_solver -lm ${ROOT_LIBRARIES})
+#target_link_libraries(MChain -lm ${ROOT_LIBRARIES})
 
 find_package(Doxygen)
 if(DOXYGEN_FOUND)

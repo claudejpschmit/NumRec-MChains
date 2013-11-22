@@ -1,18 +1,25 @@
 #pragma once
 
+#include "Pdf.hpp"
 #include <iostream>
 #include <vector>
+
 
 using namespace std;
 
 class Metropolis {
 public:
-    Metropolis(vector<double> xi_initial);
+    Metropolis(vector<double> initial_xi, Pdf *targetPdf);
     ~Metropolis();
 
-    vector<double> step(int nsteps);
+    void step();
+    vector<double> getCurrentXi();
+
 private:
-    vector<double> target_p();
-    vector<double> trial_distr_q(double sigma);
-    vector<double> xi_values;
+    vector<double> current_xi;
+    int nParams;
+    Pdf *targetPdf;
+    Gaussian *gaussian;
+    Uniform *uniform;
+   
 };
