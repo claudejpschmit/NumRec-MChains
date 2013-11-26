@@ -1,7 +1,7 @@
 #include "Metropolis.hpp"
 #include <cmath>
 
-Metropolis::Metropolis(vector<double> initial_xi, Pdf *targetPdf)
+Metropolis::Metropolis(vector<double> initial_xi, Posterior *targetPdf)
 {
     this->targetPdf = targetPdf;
     gaussian = new Gaussian(1.0, 0.0, 50.0);
@@ -17,17 +17,20 @@ Metropolis::~Metropolis()
 
 void Metropolis::step()
 {
+
     vector<double> dx, temp_xi;
     double ratio;
     for (int i = 0; i < nParams; ++i) {
-        dx[i] = gaussian->drawValue(0.0);
-        temp_xi[i] = current_xi[i] + dx[i];
-        ratio = targetPdf->evaluatePdf(temp_xi[i]) / 
-                        targetPdf->evaluatePdf(current_xi[i]);
-        
-        if (ratio >= uniform->drawValue(0.0))
-            current_xi[i] = temp_xi[i];
+        dx.push_back(gaussian->drawValue(0.0));
+        temp_xi.push_back(current_xi[i] + dx[i]);
     }
+
+    //cout << "p(new) = " << targetPdf->evaluatePdfLog(temp_xi)<<endl;
+    //cout << "p(old) = " << targetPdf->evaluatePdfLog(current_xi)<<endl;
+    ratio = exp(targetPdf->evaluatePdfLog(temp_xi) - targetPdf->evaluatePdfLog(current_xi));
+       //cout << ratio << endl; 
+    if (ratio >= uniform->drawValue(0.0))
+        current_xi = temp_xi;
 }
 
 vector<double> Metropolis::getCurrentXi()

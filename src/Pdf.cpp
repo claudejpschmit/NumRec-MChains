@@ -1,5 +1,7 @@
 #include "Pdf.hpp"
 #include <cmath>
+#include <time.h>
+
 #define PI 3.14159265
 
 using namespace std;
@@ -25,7 +27,8 @@ Gaussian::Gaussian(double sigma, double mu, double x_range)
     x_range(x_range)
 {
     // seed for rand()
-    srand(15000);
+    //srand(15000);
+    srand(time(NULL));
     max_random = evaluatePdf(mu);
 }
 
@@ -76,7 +79,8 @@ Uniform::Uniform(double x_min, double x_max)
     x_max(x_max),
     x_min(x_min)
 {
-    srand(15000);
+   // srand(15000);
+    srand(time(NULL));
 }
 
 double Uniform::drawValue(double noise)
@@ -93,8 +97,14 @@ double Uniform::drawValue(double noise)
 
 double Uniform::evaluatePdf(double x)
 {
-    (void)x;
-    return 1/(x_max - x_min);
+    if (x < x_min || x > x_max)
+        return 0;
+    else
+        return 1/(x_max - x_min);
 }
 
-
+void Uniform::setRange(double x_min, double x_max)
+{
+    this->x_min = x_min;
+    this->x_max = x_max;
+}

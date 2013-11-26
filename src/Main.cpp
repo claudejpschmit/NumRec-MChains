@@ -24,6 +24,34 @@ int main( ) {
     gaussianDistr.close();
     unifDistr.close();
     //they work
+    ifstream data("data.txt");
+    Posterior target(&data, 1.0);
+    data.close();
 
+    vector<double> initialParams {1.2,11.1}; 
+    Metropolis metro(initialParams, &target);
+    ////////////////////////////////
+    //  TEST
+    ////////////////////////////////
+
+    //cout << target.evaluatePdf(initialParams) << endl;
+
+
+
+
+    /////////////////////////////////
+    
+
+    
+    //metro.step();
+    ofstream params("params.txt");
+    for (int i = 0; i < 50; ++i) {
+        
+        metro.step();
+        vector<double> current = metro.getCurrentXi();
+        cout << i << " " <<  current[0] << " " << current[1] << endl;        
+        params << i << " " <<  current[0] << " " << current[1] << endl;        
+    }
+    params.close();
     return 0;
 }

@@ -1,6 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
+#include <vector>
+using namespace std;
 
 class Pdf {
 public:
@@ -15,7 +18,6 @@ public:
     Gaussian(double sigma, double mu, double x_range);
     double drawValue(double noise);
     double evaluatePdf(double x);
-
 private:
     double x_range;
     double sigma, mu;
@@ -29,8 +31,10 @@ public:
     Uniform(double x_min, double x_max);
     double drawValue(double noise);
     double evaluatePdf(double x);
-
+    void setRange(double x_min, double x_max);
 private:
     double x_min, x_max;
+
 };
+
 
