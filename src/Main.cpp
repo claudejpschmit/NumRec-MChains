@@ -11,6 +11,24 @@
 
 using namespace std;
 
+vector<double> lag(double L, double N, double mu, double sigma, vector<vector<double>> params)
+{
+    double norm = 1.0 / (( N - L ) * sigma * sigma);
+    double res = 0;
+    vector<double> result;
+    for (int i = 0; i < N - L; ++i) {
+        res += (params[i][0] - mu) * (params[i + L][0] - mu);
+    }
+    result.push_back(norm * res);
+    res = 0;
+    for (int i = 0; i < N - L; ++i) {
+        res += (params[i][1] - mu) * (params[i + L][1] - mu);
+    }
+    result.push_back(norm * res);
+
+    return result;
+}
+
 int main( ) {
 
     //test pdfs
@@ -56,5 +74,13 @@ int main( ) {
     cout << "average a = " << a_average << endl;
     cout << "average b = " << b_average << endl;
 
+    ofstream lagPlot("lag.txt");
+    for (int i = 0; i < 100; ++i) {
+        vector<double> buffer = lag(i, NITERATIONS, 0.0, 1.0, parameterList);
+        lagPlot << i << " " << buffer[0] << " " << buffer[1]  << endl;        
+    }
+    params.close();
+
+    
     return 0;
 }
