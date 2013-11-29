@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 
+#define NITERATIONS 10000
+#define BURNIN 100
+
 using namespace std;
 
 int main( ) {
@@ -30,28 +33,28 @@ int main( ) {
 
     vector<double> initialParams {1.2,11.1}; 
     Metropolis metro(initialParams, &target);
-    ////////////////////////////////
-    //  TEST
-    ////////////////////////////////
 
-    //cout << target.evaluatePdf(initialParams) << endl;
-
-
-
-
-    /////////////////////////////////
-    
-
-    
-    //metro.step();
+    vector<vector<double>> parameterList;
     ofstream params("params.txt");
-    for (int i = 0; i < 3000; ++i) {
+    for (int i = 0; i < NITERATIONS; ++i) {
         
         metro.step();
-        vector<double> current = metro.getCurrentXi();
-        //cout << i << " " <<  current[0] << " " << current[1] << endl;        
-        params << i << " " <<  current[0] << " " << current[1] << endl;        
+        parameterList.push_back(metro.getCurrentXi());
+        params << i << " " <<  parameterList[i][0] << " " << parameterList[i][1] << endl;        
     }
     params.close();
+
+    double a_average = 0;
+    double b_average = 0;
+
+    for (int i = BURNIN; i < NITERATIONS; ++i) {
+        a_average += parameterList[i][0];
+        b_average += parameterList[i][1];
+    }
+    a_average = a_average / (double)(NITERATIONS - BURNIN);
+    b_average = b_average / (double)(NITERATIONS - BURNIN);
+    cout << "average a = " << a_average << endl;
+    cout << "average b = " << b_average << endl;
+
     return 0;
 }
