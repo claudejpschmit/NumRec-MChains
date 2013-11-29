@@ -45,11 +45,11 @@ int main( ) {
     
     //metro.step();
     ofstream params("params.txt");
-    for (int i = 0; i < 50; ++i) {
+    for (int i = 0; i < 3000; ++i) {
         
         metro.step();
         vector<double> current = metro.getCurrentXi();
-        cout << i << " " <<  current[0] << " " << current[1] << endl;        
+        //cout << i << " " <<  current[0] << " " << current[1] << endl;        
         params << i << " " <<  current[0] << " " << current[1] << endl;        
     }
     params.close();
